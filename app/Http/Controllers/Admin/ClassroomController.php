@@ -11,7 +11,8 @@ class ClassroomController extends Controller
 {
     public function index(Request $request)
     {
-        $classrooms = Classroom::withCount('students')
+        $classrooms = Classroom::where('school_id', $request->user()->school_id)
+            ->withCount('students')
             ->orderBy('grade_level')
             ->orderBy('order')
             ->get();

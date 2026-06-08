@@ -1,12 +1,18 @@
 <?php
 
-use App\Http\Controllers\RfidDeviceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return redirect('/login');
-});
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'auth' => [
+            'user' => auth()->user() ? [
+                'name' => auth()->user()->name,
+            ] : null,
+        ],
+    ]);
+})->name('welcome');
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard routing based on roles
@@ -32,6 +38,8 @@ Route::middleware(['auth'])->group(function () {
         
         Route::get('bulk-write', [App\Http\Controllers\Admin\BulkWriteController::class, 'index'])->name('bulk-write.index');
         Route::post('bulk-write', [App\Http\Controllers\Admin\BulkWriteController::class, 'store'])->name('bulk-write.store');
+
+        Route::resource('rfid-devices', App\Http\Controllers\Admin\RfidDeviceController::class);
     });
 
     // Kurikulum Routes
@@ -50,8 +58,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('promotion/apply', [App\Http\Controllers\Kurikulum\PromotionController::class, 'apply'])->name('promotion.apply');
     });
 
-    // Manajemen Perangkat RFID
-    Route::resource('rfid-devices', App\Http\Controllers\Admin\RfidDeviceController::class);
 
     // Teacher Routes
     Route::prefix('teacher')->name('teacher.')->group(function () {

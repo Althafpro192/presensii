@@ -3,29 +3,24 @@ import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-background bg-gradient-to-br from-indigo-50 via-white to-blue-50">
-        <!-- Brand / Logo Area -->
-        <div 
-            v-motion
-            :initial="{ opacity: 0, y: -20 }"
-            :enter="{ opacity: 1, y: 0, transition: { duration: 500 } }"
-        >
-            <Link href="/" class="flex items-center gap-2">
-                <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/30">
+    <div class="min-h-screen w-full flex flex-col justify-center items-center bg-slate-100 px-4 sm:px-6">
+        <!-- Logo Area -->
+        <div class="mb-8 flex flex-col items-center">
+            <Link href="/" class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center text-white font-medium text-lg">
                     S
                 </div>
-                <h1 class="text-2xl font-bold text-slate-800">Sistem Presensi</h1>
+                <h1 class="text-xl font-medium text-slate-900">Sistem Presensi</h1>
             </Link>
         </div>
 
-        <!-- Card Container -->
-        <div 
-            v-motion
-            :initial="{ opacity: 0, scale: 0.95 }"
-            :enter="{ opacity: 1, scale: 1, transition: { delay: 100, duration: 400 } }"
-            class="w-full sm:max-w-md mt-8 px-6 py-8 glass rounded-2xl overflow-hidden"
-        >
+        <!-- Form Card Container -->
+        <div class="w-full max-w-[400px] bg-white border border-slate-200 rounded-[12px] p-6 sm:p-8">
             <slot />
+        </div>
+        
+        <div class="mt-8 text-center text-[13px] text-slate-500">
+            &copy; {{ new Date().getFullYear() }} Sistem Presensi Sekolah.
         </div>
     </div>
 </template>

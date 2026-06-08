@@ -27,35 +27,35 @@ watch([search, classroomId], () => {
 
         <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-slate-800">Manajemen Siswa</h1>
-                <p class="text-slate-500">Kelola data siswa, RFID, dan wali murid.</p>
+                <h1 class="text-[22px] font-medium text-slate-900">Manajemen Siswa</h1>
+                <p class="text-[13px] text-slate-500 mt-1">Kelola data siswa, baris RFID, dan wali murid.</p>
             </div>
             <Link 
                 href="/admin/students/create" 
-                class="inline-flex items-center justify-center px-4 py-2.5 bg-primary border border-transparent rounded-xl font-medium text-white hover:bg-primary-dark transition-all"
+                class="inline-flex items-center justify-center px-4 py-2 bg-indigo-500 border border-transparent rounded-lg font-medium text-[13px] text-white hover:bg-indigo-600 transition-colors"
             >
-                <PlusIcon class="w-5 h-5 mr-2" />
+                <PlusIcon class="w-4 h-4 mr-2" />
                 Tambah Siswa
             </Link>
         </div>
 
-        <div class="glass rounded-2xl overflow-hidden shadow-sm">
+        <div class="bg-white border border-slate-200 rounded-[12px] overflow-hidden">
             <!-- Toolbar -->
-            <div class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row gap-4 justify-between items-center">
+            <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-4 justify-between items-center">
                 <div class="relative w-full sm:w-64">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <MagnifyingGlassIcon class="h-5 w-5 text-slate-400" />
+                        <MagnifyingGlassIcon class="h-4 w-4 text-slate-400" />
                     </div>
                     <input 
                         v-model="search"
                         type="text" 
-                        class="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition-colors" 
+                        class="block w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-[13px] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" 
                         placeholder="Cari NIS atau Nama..."
                     >
                 </div>
                 
                 <div class="w-full sm:w-auto">
-                    <select v-model="classroomId" class="block w-full pl-3 pr-10 py-2 text-base border-slate-200 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-xl">
+                    <select v-model="classroomId" class="block w-full pl-3 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
                         <option value="">Semua Kelas</option>
                         <option v-for="c in classrooms" :key="c.id" :value="c.id">{{ c.name }} (Tingkat {{ c.grade_level }})</option>
                     </select>
@@ -64,49 +64,49 @@ watch([search, classroomId], () => {
 
             <!-- Table -->
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200">
-                    <thead class="bg-slate-50/80 backdrop-blur">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">NIS</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama Siswa</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Kelas</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">UID RFID</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status Kenaikan</th>
-                            <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Aksi</th>
+                            <th class="px-5 py-3 text-[12px] font-medium text-slate-700 uppercase tracking-wide border-b border-slate-200">NIS</th>
+                            <th class="px-5 py-3 text-[12px] font-medium text-slate-700 uppercase tracking-wide border-b border-slate-200">Nama Siswa</th>
+                            <th class="px-5 py-3 text-[12px] font-medium text-slate-700 uppercase tracking-wide border-b border-slate-200">Kelas</th>
+                            <th class="px-5 py-3 text-[12px] font-medium text-slate-700 uppercase tracking-wide border-b border-slate-200">UID RFID</th>
+                            <th class="px-5 py-3 text-[12px] font-medium text-slate-700 uppercase tracking-wide border-b border-slate-200">Status</th>
+                            <th class="px-5 py-3 text-right text-[12px] font-medium text-slate-700 uppercase tracking-wide border-b border-slate-200">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-200">
-                        <tr v-for="student in students.data" :key="student.id" class="hover:bg-white/50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
+                    <tbody class="divide-y divide-slate-100">
+                        <tr v-for="student in students.data" :key="student.id" class="hover:bg-slate-50 transition-colors">
+                            <td class="px-5 py-3 text-[14px] text-slate-900 font-medium">
                                 {{ student.nis }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
+                            <td class="px-5 py-3 text-[14px] text-slate-900">
                                 {{ student.name }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                            <td class="px-5 py-3 text-[14px] text-slate-500">
                                 {{ student.classroom?.name || '-' }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-mono">
+                            <td class="px-5 py-3 text-[13px] text-slate-500 font-mono">
                                 {{ student.rfid || 'Belum Ada' }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 text-xs font-medium rounded-lg" 
+                            <td class="px-5 py-3">
+                                <span class="px-2.5 py-0.5 text-[12px] font-medium rounded-full" 
                                       :class="{
-                                          'bg-amber-100 text-amber-700': student.promotion_status === 'pending',
-                                          'bg-green-100 text-green-700': student.promotion_status === 'naik' || student.promotion_status === 'lulus',
-                                          'bg-red-100 text-red-700': student.promotion_status === 'tidak_naik'
+                                          'bg-yellow-100 text-yellow-800': student.promotion_status === 'pending',
+                                          'bg-green-100 text-green-800': student.promotion_status === 'naik' || student.promotion_status === 'lulus',
+                                          'bg-red-100 text-red-800': student.promotion_status === 'tidak_naik'
                                       }">
                                     {{ student.promotion_status }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <Link :href="`/admin/students/${student.id}/edit`" class="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors inline-block">
-                                    <PencilSquareIcon class="w-5 h-5" />
+                            <td class="px-5 py-3 text-right">
+                                <Link :href="`/admin/students/${student.id}/edit`" class="inline-flex p-1.5 text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors">
+                                    <PencilSquareIcon class="w-4 h-4" />
                                 </Link>
                             </td>
                         </tr>
                         <tr v-if="students.data.length === 0">
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="6" class="px-5 py-10 text-center text-[13px] text-slate-400">
                                 Tidak ada data siswa ditemukan.
                             </td>
                         </tr>
@@ -115,21 +115,21 @@ watch([search, classroomId], () => {
             </div>
             
             <!-- Pagination -->
-            <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-between" v-if="students.links && students.data.length > 0">
+            <div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between" v-if="students.links && students.data.length > 0">
                 <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                     <div>
-                        <p class="text-sm text-slate-700">
-                            Menampilkan <span class="font-medium">{{ students.from }}</span> - <span class="font-medium">{{ students.to }}</span> dari <span class="font-medium">{{ students.total }}</span> hasil
+                        <p class="text-[13px] text-slate-500">
+                            Menampilkan <span class="font-medium text-slate-900">{{ students.from }}</span> - <span class="font-medium text-slate-900">{{ students.to }}</span> dari <span class="font-medium text-slate-900">{{ students.total }}</span> hasil
                         </p>
                     </div>
                     <div>
-                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                        <nav class="relative z-0 inline-flex rounded-lg -space-x-px">
                             <Link v-for="(link, i) in students.links" :key="i" :href="link.url || '#'" 
-                                  class="relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                                  class="relative inline-flex items-center px-3 py-1.5 border text-[13px] font-medium"
                                   :class="[
-                                    link.active ? 'z-10 bg-primary border-primary text-white' : 'bg-white border-slate-300 text-slate-500 hover:bg-slate-50',
-                                    i === 0 ? 'rounded-l-md' : '',
-                                    i === students.links.length - 1 ? 'rounded-r-md' : '',
+                                    link.active ? 'z-10 bg-indigo-500 border-indigo-500 text-white' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50',
+                                    i === 0 ? 'rounded-l-lg' : '',
+                                    i === students.links.length - 1 ? 'rounded-r-lg' : '',
                                     !link.url ? 'opacity-50 cursor-not-allowed' : ''
                                   ]"
                                   v-html="link.label"

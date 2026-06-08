@@ -49,23 +49,23 @@ const submit = () => {
                     <Settings2Icon class="w-6 h-6" />
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Pengaturan Fitur Tambahan</h1>
+                    <h1 class="text-[22px] font-medium text-slate-900 tracking-tight">Pengaturan Fitur Tambahan</h1>
                     <p class="text-sm text-slate-500">Aktifkan atau nonaktifkan modul spesifik untuk sekolah Anda</p>
                 </div>
             </div>
             
             <button @click="submit" :disabled="form.processing"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 border border-transparent rounded-xl font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all disabled:opacity-50">
+                class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500 border border-transparent rounded-[8px] font-medium text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all disabled:opacity-50">
                 <SaveIcon class="w-4 h-4" />
                 Simpan Konfigurasi
             </button>
         </div>
 
-        <div class="bg-white/70 backdrop-blur-xl border border-white/40 shadow-sm rounded-2xl overflow-hidden">
+        <div class="bg-white border border-slate-200 rounded-[12px] overflow-hidden">
             <ul role="list" class="divide-y divide-slate-200/60">
                 <li v-for="(feature, index) in form.features" :key="feature.feature_name" class="p-6 flex items-center justify-between hover:bg-slate-50/50 transition-colors">
                     <div class="flex-1 pr-8">
-                        <label :for="`feature-${index}`" class="text-base font-semibold text-slate-800 cursor-pointer">
+                        <label :for="`feature-${index}`" class="text-[16px] font-medium text-slate-900 cursor-pointer">
                             {{ getFeatureLabel(feature.feature_name) }}
                         </label>
                         <p class="mt-1 text-sm text-slate-500">{{ getFeatureDesc(feature.feature_name) }}</p>

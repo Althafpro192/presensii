@@ -40,23 +40,23 @@ const updateStatus = (student, status) => {
 
         <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-slate-800">Proses Kenaikan Kelas</h1>
-                <p class="text-slate-500">Atur status kenaikan kelas untuk tahun ajaran baru.</p>
+                <h1 class="text-[22px] font-medium text-slate-900 tracking-tight">Proses Kenaikan Kelas</h1>
+                <p class="text-[13px] text-slate-500 mt-1">Atur status kenaikan kelas untuk tahun ajaran baru.</p>
             </div>
             <button 
                 @click="applyPromotions"
-                class="inline-flex items-center px-4 py-2.5 bg-green-600 border border-transparent rounded-xl font-medium text-white hover:bg-green-700 transition-all disabled:opacity-50"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-green-500 border border-transparent rounded-lg font-medium text-[13px] text-white hover:bg-green-600 transition-colors disabled:opacity-50"
                 :disabled="applyForm.processing"
             >
-                <CheckCircleIcon class="w-5 h-5 mr-2" />
+                <CheckCircleIcon class="w-4 h-4" />
                 {{ applyForm.processing ? 'Memproses...' : 'Terapkan Kenaikan' }}
             </button>
         </div>
 
-        <div class="glass rounded-2xl overflow-hidden shadow-sm">
+        <div class="bg-white border border-slate-200 rounded-[12px] overflow-hidden">
             <!-- Filter -->
-            <div class="p-4 border-b border-slate-200 bg-slate-50/50">
-                <select v-model="classroomId" @change="filterClass" class="block w-full sm:w-64 pl-3 pr-10 py-2 border-slate-200 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-xl">
+            <div class="p-4 border-b border-slate-200 bg-slate-50">
+                <select v-model="classroomId" @change="filterClass" class="block w-full sm:w-64 px-3 py-2 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-[13px] rounded-lg bg-white transition-colors">
                     <option value="">Pilih Kelas</option>
                     <option v-for="c in classrooms" :key="c.id" :value="c.id">{{ c.name }} (Tingkat {{ c.grade_level }})</option>
                 </select>
@@ -64,45 +64,45 @@ const updateStatus = (student, status) => {
 
             <!-- Table -->
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200">
-                    <thead class="bg-slate-50/80">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">NIS & Nama</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Kelas Saat Ini</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status Kenaikan</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Aksi Cepat</th>
+                            <th scope="col" class="px-5 py-3 text-[12px] font-medium text-slate-700 uppercase tracking-wide">NIS & Nama</th>
+                            <th scope="col" class="px-5 py-3 text-[12px] font-medium text-slate-700 uppercase tracking-wide">Kelas Saat Ini</th>
+                            <th scope="col" class="px-5 py-3 text-[12px] font-medium text-slate-700 uppercase tracking-wide">Status Kenaikan</th>
+                            <th scope="col" class="px-5 py-3 text-[12px] font-medium text-slate-700 uppercase tracking-wide">Aksi Cepat</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-200">
-                        <tr v-for="student in students.data" :key="student.id" class="hover:bg-white/50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-bold text-slate-900">{{ student.name }}</div>
-                                <div class="text-xs text-slate-500">{{ student.nis }}</div>
+                    <tbody class="divide-y divide-slate-100">
+                        <tr v-for="student in students.data" :key="student.id" class="hover:bg-slate-50 transition-colors">
+                            <td class="px-5 py-3 whitespace-nowrap">
+                                <div class="text-[14px] font-medium text-slate-900">{{ student.name }}</div>
+                                <div class="text-[13px] text-slate-500">{{ student.nis }}</div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                            <td class="px-5 py-3 whitespace-nowrap text-[14px] text-slate-600">
                                 {{ student.classroom?.name || '-' }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 text-xs font-medium rounded-lg" 
+                            <td class="px-5 py-3 whitespace-nowrap">
+                                <span class="px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wide rounded-full border" 
                                       :class="{
-                                          'bg-amber-100 text-amber-700': student.promotion_status === 'pending',
-                                          'bg-green-100 text-green-700': student.promotion_status === 'naik',
-                                          'bg-blue-100 text-blue-700': student.promotion_status === 'lulus',
-                                          'bg-red-100 text-red-700': student.promotion_status === 'tidak_naik'
+                                          'bg-yellow-50 text-yellow-700 border-yellow-200': student.promotion_status === 'pending',
+                                          'bg-green-50 text-green-700 border-green-200': student.promotion_status === 'naik',
+                                          'bg-indigo-50 text-indigo-700 border-indigo-200': student.promotion_status === 'lulus',
+                                          'bg-red-50 text-red-700 border-red-200': student.promotion_status === 'tidak_naik'
                                       }">
                                     {{ student.promotion_status }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <td class="px-5 py-3 whitespace-nowrap text-sm">
                                 <div class="flex gap-2">
-                                    <button @click="updateStatus(student, 'naik')" class="px-2 py-1 text-xs rounded bg-green-50 text-green-700 border border-green-200 hover:bg-green-100">Naik</button>
-                                    <button @click="updateStatus(student, 'tidak_naik')" class="px-2 py-1 text-xs rounded bg-red-50 text-red-700 border border-red-200 hover:bg-red-100">Tinggal</button>
-                                    <button @click="updateStatus(student, 'lulus')" class="px-2 py-1 text-xs rounded bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">Lulus</button>
+                                    <button @click="updateStatus(student, 'naik')" class="px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide rounded bg-white text-green-700 border border-green-200 hover:bg-green-50 transition-colors">Naik</button>
+                                    <button @click="updateStatus(student, 'tidak_naik')" class="px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide rounded bg-white text-red-700 border border-red-200 hover:bg-red-50 transition-colors">Tinggal</button>
+                                    <button @click="updateStatus(student, 'lulus')" class="px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide rounded bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-50 transition-colors">Lulus</button>
                                 </div>
                             </td>
                         </tr>
                         <tr v-if="students.data.length === 0">
-                            <td colspan="4" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="4" class="px-5 py-12 text-center text-[13px] text-slate-500">
                                 Silakan pilih kelas terlebih dahulu.
                             </td>
                         </tr>
@@ -110,9 +110,9 @@ const updateStatus = (student, status) => {
                 </table>
             </div>
             
-            <div class="px-6 py-4 border-t border-slate-200" v-if="students.links">
+            <div class="px-5 py-4 border-t border-slate-100 bg-slate-50" v-if="students.links">
                  <!-- Pagination stub -->
-                 <p class="text-sm text-slate-500">Gunakan filter kelas untuk menampilkan data.</p>
+                 <p class="text-[13px] text-slate-500">Gunakan filter kelas untuk menampilkan data.</p>
             </div>
         </div>
     </AppLayout>

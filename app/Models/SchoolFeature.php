@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class SchoolFeature extends Model
 {
     protected $table = 'school_feature';
+
+    use Auditable;
 
     protected $fillable = ['school_id', 'feature_name', 'is_enabled'];
 

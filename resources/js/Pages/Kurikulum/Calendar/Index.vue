@@ -41,7 +41,7 @@ const mapEvents = () => {
         events.push({
             title: h.name || (h.type === 'libur' ? 'Libur Sekolah' : 'Masuk (Override)'),
             start: h.event_date,
-            color: h.type === 'libur' ? '#f97316' : '#22c55e', // orange / green
+            color: h.type === 'libur' ? '#f59e0b' : '#10b981', // yellow / green
         });
     });
 
@@ -51,7 +51,7 @@ const mapEvents = () => {
             title: a.name,
             start: a.start_date,
             end: new Date(new Date(a.end_date).getTime() + 86400000).toISOString().split('T')[0], // Exclusive end date for FC
-            color: '#3b82f6', // blue
+            color: '#6366f1', // indigo
         });
     });
 
@@ -92,43 +92,47 @@ const calendarOptions = ref({
         <Head title="Kalender Akademik" />
 
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-slate-800">Kalender Akademik</h1>
-            <p class="text-slate-500">Kelola hari libur dan acara sekolah.</p>
+            <h1 class="text-[22px] font-medium text-slate-900 tracking-tight">Kalender Akademik</h1>
+            <p class="text-[13px] text-slate-500 mt-1">Kelola hari libur dan acara sekolah.</p>
         </div>
 
-        <div class="glass p-6 rounded-2xl">
+        <div class="bg-white border border-slate-200 p-6 rounded-[12px]">
             <FullCalendar :options="calendarOptions" />
         </div>
 
         <!-- Simple Modal (v-if for simplicity) -->
-        <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-            <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Atur Status: {{ selectedDate }}</h3>
-                <form @submit.prevent="saveHoliday" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Tipe</label>
-                        <select v-model="form.type" class="mt-1 block w-full rounded-xl border-slate-200">
-                            <option value="libur">Libur Sekolah</option>
-                            <option value="masuk">Masuk (Abaikan Libur Nasional)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Keterangan</label>
-                        <input v-model="form.name" type="text" class="mt-1 block w-full rounded-xl border-slate-200" placeholder="Opsional">
-                    </div>
-                    
-                    <div class="flex items-center pt-2">
-                        <input type="checkbox" v-model="form.override_government" id="override" class="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4">
-                        <label for="override" class="ml-2 block text-sm text-slate-900">
-                            Override status hari ini
-                        </label>
-                    </div>
+        <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
+            <div class="bg-white rounded-[12px] border border-slate-200 w-full max-w-md overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
+                    <h3 class="text-[16px] font-medium text-slate-900">Atur Status: {{ selectedDate }}</h3>
+                </div>
+                <div class="p-6">
+                    <form @submit.prevent="saveHoliday" class="space-y-4">
+                        <div>
+                            <label class="block text-[12px] font-medium text-slate-700 mb-1">Tipe</label>
+                            <select v-model="form.type" class="block w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                                <option value="libur">Libur Sekolah</option>
+                                <option value="masuk">Masuk (Abaikan Libur Nasional)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[12px] font-medium text-slate-700 mb-1">Keterangan</label>
+                            <input v-model="form.name" type="text" class="block w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="Opsional">
+                        </div>
+                        
+                        <div class="flex items-center pt-2">
+                            <input type="checkbox" v-model="form.override_government" id="override" class="rounded border-slate-300 text-indigo-500 focus:ring-indigo-500 h-4 w-4">
+                            <label for="override" class="ml-2 block text-[13px] text-slate-700 font-medium">
+                                Override status hari ini
+                            </label>
+                        </div>
 
-                    <div class="pt-4 flex justify-end gap-3 border-t border-slate-100">
-                        <button type="button" @click="isModalOpen = false" class="px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-xl">Batal</button>
-                        <button type="submit" class="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary-dark">Simpan</button>
-                    </div>
-                </form>
+                        <div class="pt-5 mt-2 flex justify-end gap-3 border-t border-slate-100">
+                            <button type="button" @click="isModalOpen = false" class="px-4 py-2 text-[13px] font-medium text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">Batal</button>
+                            <button type="submit" class="px-4 py-2 bg-indigo-500 text-white text-[13px] font-medium rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 transition-colors">Simpan</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -140,11 +144,24 @@ const calendarOptions = ref({
     border-color: #e2e8f0;
 }
 .fc .fc-button-primary {
-    background-color: #4361ee;
-    border-color: #4361ee;
+    background-color: #6366f1; /* indigo-500 */
+    border-color: #6366f1;
+    text-transform: capitalize;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
 }
 .fc .fc-button-primary:hover {
-    background-color: #3751c6;
-    border-color: #3751c6;
+    background-color: #4f46e5; /* indigo-600 */
+    border-color: #4f46e5;
+}
+.fc .fc-toolbar-title {
+    font-size: 1.25rem !important;
+    font-weight: 500 !important;
+    color: #0f172a; /* slate-900 */
+}
+.fc-daygrid-day-number {
+    font-size: 13px;
+    color: #475569; /* slate-600 */
 }
 </style>

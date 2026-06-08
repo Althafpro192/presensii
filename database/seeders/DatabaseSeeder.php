@@ -21,14 +21,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // ── 1. Create Super Admin ──────────────────────────────────
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@presensi.com',
-            'password' => 'password',
-            'role' => UserRole::SuperAdmin,
-            'school_id' => null,
-            'phone' => '081200000000',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'superadmin@presensi.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => 'password',
+                'role' => UserRole::SuperAdmin,
+                'school_id' => null,
+                'phone' => '081200000000',
+            ]
+        );
 
         // ── 2. Create Schools ──────────────────────────────────────
         $schools = [
@@ -61,73 +63,83 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($schools as $schoolData) {
-            $school = School::create($schoolData);
+            $school = School::firstOrCreate(
+                ['slug' => $schoolData['slug']],
+                $schoolData
+            );
 
             // Create features for each school
             foreach (SchoolFeature::FEATURES as $feature) {
-                SchoolFeature::create([
-                    'school_id' => $school->id,
-                    'feature_name' => $feature,
-                    'is_enabled' => true,
-                ]);
+                SchoolFeature::firstOrCreate(
+                    ['school_id' => $school->id, 'feature_name' => $feature],
+                    ['is_enabled' => true]
+                );
             }
 
             // Create academic year
-            $academicYear = AcademicYear::create([
-                'school_id' => $school->id,
-                'name' => '2025/2026',
-                'start_date' => '2025-07-14',
-                'end_date' => '2026-06-30',
-                'is_current' => true,
-            ]);
+            $academicYear = AcademicYear::firstOrCreate(
+                ['school_id' => $school->id, 'name' => '2025/2026'],
+                [
+                    'start_date' => '2025-07-14',
+                    'end_date' => '2026-06-30',
+                    'is_current' => true,
+                ]
+            );
 
             // Create classrooms (3 grade levels, 2 classes each)
             $classrooms = [];
             foreach ([10, 11, 12] as $grade) {
                 foreach (['IPA 1', 'IPS 1'] as $i => $suffix) {
-                    $classrooms[] = Classroom::create([
-                        'school_id' => $school->id,
-                        'name' => "$grade $suffix",
-                        'grade_level' => $grade,
-                        'order' => $i,
-                    ]);
+                    $classrooms[] = Classroom::firstOrCreate(
+                        ['school_id' => $school->id, 'name' => "$grade $suffix"],
+                        [
+                            'grade_level' => $grade,
+                            'order' => $i,
+                        ]
+                    );
                 }
             }
 
             // Create admin sekolah
-            User::create([
-                'name' => "Admin {$school->name}",
-                'email' => "admin@{$school->slug}.com",
-                'password' => 'password',
-                'role' => UserRole::AdminSekolah,
-                'school_id' => $school->id,
-                'phone' => '0812' . rand(10000000, 99999999),
-            ]);
+            User::firstOrCreate(
+                ['email' => "admin@{$school->slug}.com"],
+                [
+                    'name' => "Admin {$school->name}",
+                    'password' => 'password',
+                    'role' => UserRole::AdminSekolah,
+                    'school_id' => $school->id,
+                    'phone' => '0812' . rand(10000000, 99999999),
+                ]
+            );
 
             // Create kurikulum
-            User::create([
-                'name' => "Kurikulum {$school->name}",
-                'email' => "kurikulum@{$school->slug}.com",
-                'password' => 'password',
-                'role' => UserRole::Kurikulum,
-                'school_id' => $school->id,
-                'phone' => '0813' . rand(10000000, 99999999),
-            ]);
+            User::firstOrCreate(
+                ['email' => "kurikulum@{$school->slug}.com"],
+                [
+                    'name' => "Kurikulum {$school->name}",
+                    'password' => 'password',
+                    'role' => UserRole::Kurikulum,
+                    'school_id' => $school->id,
+                    'phone' => '0813' . rand(10000000, 99999999),
+                ]
+            );
 
             // Create teachers (one per classroom as homeroom)
             foreach ($classrooms as $classroom) {
-                $teacher = User::create([
-                    'name' => "Guru Wali Kelas {$classroom->name}",
-                    'email' => "guru.{$classroom->id}@{$school->slug}.com",
-                    'password' => 'password',
-                    'role' => UserRole::Teacher,
-                    'school_id' => $school->id,
-                    'classroom_id' => $classroom->id,
-                    'phone' => '0814' . rand(10000000, 99999999),
-                ]);
+                $teacher = User::firstOrCreate(
+                    ['email' => "guru.{$classroom->id}@{$school->slug}.com"],
+                    [
+                        'name' => "Guru Wali Kelas {$classroom->name}",
+                        'password' => 'password',
+                        'role' => UserRole::Teacher,
+                        'school_id' => $school->id,
+                        'classroom_id' => $classroom->id,
+                        'phone' => '0814' . rand(10000000, 99999999),
+                    ]
+                );
 
                 // Assign as homeroom teacher
-                ClassroomTeacher::create([
+                ClassroomTeacher::firstOrCreate([
                     'academic_year_id' => $academicYear->id,
                     'classroom_id' => $classroom->id,
                     'teacher_id' => $teacher->id,
@@ -135,11 +147,10 @@ class DatabaseSeeder extends Seeder
             }
 
             // Create RFID device
-            $device = RfidDevice::create([
-                'school_id' => $school->id,
-                'device_name' => 'ESP32 Gerbang Utama',
-                'ip_address' => '192.168.1.100',
-            ]);
+            $device = RfidDevice::firstOrCreate(
+                ['school_id' => $school->id, 'device_name' => 'ESP32 Gerbang Utama'],
+                ['ip_address' => '192.168.1.100']
+            );
 
             // Create students (5 per classroom) with RFID cards
             foreach ($classrooms as $classroom) {
@@ -147,36 +158,47 @@ class DatabaseSeeder extends Seeder
                     $nis = $school->id . str_pad($classroom->id, 3, '0', STR_PAD_LEFT) . str_pad($s, 3, '0', STR_PAD_LEFT);
                     $rfidUid = strtoupper(Str::random(8));
 
-                    $student = Student::create([
-                        'school_id' => $school->id,
-                        'classroom_id' => $classroom->id,
-                        'nis' => $nis,
-                        'name' => "Siswa {$classroom->name} #{$s}",
-                        'rfid' => $rfidUid,
-                        'parent_phone' => '0815' . rand(10000000, 99999999),
-                    ]);
+                    $student = Student::firstOrCreate(
+                        ['nis' => $nis],
+                        [
+                            'school_id' => $school->id,
+                            'classroom_id' => $classroom->id,
+                            'name' => "Siswa {$classroom->name} #{$s}",
+                            'rfid' => $rfidUid,
+                            'parent_phone' => '0815' . rand(10000000, 99999999),
+                        ]
+                    );
 
-                    // Create RFID card assignment
-                    RfidCardAssignment::create([
-                        'student_id' => $student->id,
-                        'rfid_device_id' => $device->id,
-                        'card_uid' => $rfidUid,
-                        'status' => 'active',
-                    ]);
+                    // Create RFID card assignment (only if student was just created)
+                    if ($student->wasRecentlyCreated) {
+                        RfidCardAssignment::firstOrCreate(
+                            ['card_uid' => $student->rfid],
+                            [
+                                'student_id' => $student->id,
+                                'rfid_device_id' => $device->id,
+                                'status' => 'active',
+                                'assigned_at' => now(),
+                            ]
+                        );
+                    }
 
                     // Create parent for first 2 students per class
                     if ($s <= 2) {
-                        $parent = User::create([
-                            'name' => "Orang Tua {$student->name}",
-                            'email' => "ortu.{$student->id}@{$school->slug}.com",
-                            'password' => 'password',
-                            'role' => UserRole::OrangTua,
-                            'school_id' => $school->id,
-                            'phone' => $student->parent_phone,
-                        ]);
+                        $parent = User::firstOrCreate(
+                            ['email' => "ortu.{$student->id}@{$school->slug}.com"],
+                            [
+                                'name' => "Orang Tua {$student->name}",
+                                'password' => 'password',
+                                'role' => UserRole::OrangTua,
+                                'school_id' => $school->id,
+                                'phone' => $student->parent_phone,
+                            ]
+                        );
 
                         // Link parent to student
-                        $parent->students()->attach($student->id);
+                        if (!$parent->students()->where('student_id', $student->id)->exists()) {
+                            $parent->students()->attach($student->id);
+                        }
                     }
                 }
             }
@@ -196,7 +218,10 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($holidays as $holiday) {
-            GovernmentHoliday::create(array_merge($holiday, ['is_national' => true]));
+            GovernmentHoliday::firstOrCreate(
+                ['holiday_date' => $holiday['holiday_date']],
+                array_merge($holiday, ['is_national' => true])
+            );
         }
     }
 }

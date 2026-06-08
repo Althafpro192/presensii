@@ -14,7 +14,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::where('school_id', $request->user()->school_id)
-            ->whereIn('role', ['teacher', 'kurikulum', 'parent', 'admin'])
+            ->whereIn('role', ['teacher', 'kurikulum', 'orang_tua', 'admin_sekolah'])
             ->orderBy('role')
             ->orderBy('name')
             ->get();
@@ -29,7 +29,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'role' => 'required|in:admin,teacher,kurikulum,parent',
+            'role' => 'required|in:admin_sekolah,teacher,kurikulum,orang_tua',
             'password' => ['required', Rules\Password::defaults()],
         ]);
 
@@ -46,7 +46,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-            'role' => 'required|in:admin,teacher,kurikulum,parent',
+            'role' => 'required|in:admin_sekolah,teacher,kurikulum,orang_tua',
         ]);
 
         if ($request->filled('password')) {

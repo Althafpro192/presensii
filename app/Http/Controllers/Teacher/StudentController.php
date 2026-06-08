@@ -53,18 +53,22 @@ class StudentController extends Controller
         return redirect()->back()->with('success', 'Kartu siswa berhasil dilaporkan hilang.');
     }
 
+    /**
+     * Store a new violation for a student.
+     * Columns match student_violations migration: violation_type, description, violation_date, sanction, recorded_by.
+     */
     public function storeViolation(Request $request, Student $student)
     {
         $validated = $request->validate([
             'violation_type' => 'required|string|max:255',
-            'points' => 'required|integer|min:1',
             'description' => 'nullable|string',
-            'date' => 'required|date',
+            'violation_date' => 'required|date',
+            'sanction' => 'nullable|in:peringatan,skors,dikembalikan_ke_ortu',
         ]);
 
         $validated['school_id'] = $student->school_id;
         $validated['student_id'] = $student->id;
-        $validated['reported_by'] = $request->user()->id;
+        $validated['recorded_by'] = $request->user()->id;
 
         StudentViolation::create($validated);
 
