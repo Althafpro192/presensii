@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreStudentRequest;
+use App\Http\Requests\Admin\UpdateStudentRequest;
 use App\Models\Classroom;
 use App\Models\Student;
+use App\UseCases\Admin\Student\CreateStudentUseCase;
+use App\UseCases\Admin\Student\UpdateStudentUseCase;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -37,21 +41,11 @@ class StudentController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreStudentRequest $request, CreateStudentUseCase $useCase)
     {
-        $validated = $request->validate([
-            'nis' => 'required|string|unique:students',
-            'name' => 'required|string|max:255',
-            'classroom_id' => 'required|exists:classrooms,id',
-            'rfid' => 'nullable|string|unique:students',
-            'parent_phone' => 'nullable|string',
-        ]);
+        $useCase->execute($request->validated(), $request->user());
 
-        $validated['school_id'] = $request->user()->school_id;
-
-        Student::create($validated);
-
-        return redirect()->route('students.index')
+        return redirect()->route('admin.students.index')
             ->with('success', 'Siswa berhasil ditambahkan.');
     }
 
@@ -65,19 +59,11 @@ class StudentController extends Controller
         ]);
     }
 
-    public function update(Request $request, Student $student)
+    public function update(UpdateStudentRequest $request, Student $student, UpdateStudentUseCase $useCase)
     {
-        $validated = $request->validate([
-            'nis' => 'required|string|unique:students,nis,' . $student->id,
-            'name' => 'required|string|max:255',
-            'classroom_id' => 'nullable|exists:classrooms,id',
-            'rfid' => 'nullable|string|unique:students,rfid,' . $student->id,
-            'parent_phone' => 'nullable|string',
-        ]);
+        $useCase->execute($student, $request->validated());
 
-        $student->update($validated);
-
-        return redirect()->route('students.index')
+        return redirect()->route('admin.students.index')
             ->with('success', 'Siswa berhasil diperbarui.');
     }
 
@@ -85,7 +71,7 @@ class StudentController extends Controller
     {
         $student->delete();
 
-        return redirect()->route('students.index')
+        return redirect()->route('admin.students.index')
             ->with('success', 'Siswa berhasil dihapus.');
     }
 }
