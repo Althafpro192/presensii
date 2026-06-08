@@ -14,6 +14,10 @@ Route::get('/', function () {
     ]);
 })->name('welcome');
 
+Route::get('/login', function () {
+    return Inertia::render('Auth/Login');
+})->middleware('guest')->name('login');
+
 Route::middleware(['auth'])->group(function () {
     // Dashboard routing based on roles
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
