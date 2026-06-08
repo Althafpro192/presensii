@@ -1,0 +1,1 @@
+'verify.device.api.key' => \App\Http\Middleware\VerifyDeviceApiKey::class,
