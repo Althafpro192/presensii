@@ -74,7 +74,16 @@ const getStatusColor = (status) => {
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <form @submit.prevent="filterByDate" class="flex items-center gap-2">
+                    <a :href="`/admin/attendance/export/excel?classroom_id=${classroom.id}&date=${filterForm.date}`" target="_blank"
+                       class="inline-flex items-center px-3 py-2 bg-emerald-500 text-white text-[13px] font-medium rounded-lg hover:bg-emerald-600 transition-colors">
+                        Excel
+                    </a>
+                    <a :href="`/admin/attendance/export/pdf?classroom_id=${classroom.id}&date=${filterForm.date}`" target="_blank"
+                       class="inline-flex items-center px-3 py-2 bg-rose-500 text-white text-[13px] font-medium rounded-lg hover:bg-rose-600 transition-colors">
+                        PDF
+                    </a>
+
+                    <form @submit.prevent="filterByDate" class="flex items-center gap-2 ml-2">
                         <div class="relative">
                             <CalendarIcon class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input type="date" v-model="filterForm.date" @change="filterByDate"

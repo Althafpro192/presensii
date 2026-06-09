@@ -44,8 +44,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('bulk-write', [App\Http\Controllers\Admin\BulkWriteController::class, 'store'])->name('bulk-write.store');
 
         Route::resource('rfid-devices', App\Http\Controllers\Admin\RfidDeviceController::class);
+        
+        Route::get('attendance/export/excel', [App\Http\Controllers\Admin\AttendanceExportController::class, 'exportExcel'])->name('attendance.export.excel');
+        Route::get('attendance/export/pdf', [App\Http\Controllers\Admin\AttendanceExportController::class, 'exportPdf'])->name('attendance.export.pdf');
     });
-
     // Kurikulum Routes
     Route::prefix('kurikulum')->name('kurikulum.')->group(function () {
         Route::resource('academic-years', App\Http\Controllers\Kurikulum\AcademicYearController::class);

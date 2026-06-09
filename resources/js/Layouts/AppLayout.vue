@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { 
     HomeIcon, 
@@ -7,7 +7,10 @@ import {
     UsersIcon, 
     Cog6ToothIcon,
     Bars3Icon,
-    ArrowRightOnRectangleIcon
+    ArrowRightOnRectangleIcon,
+    CheckCircleIcon,
+    ExclamationCircleIcon as AlertCircleIcon,
+    XMarkIcon as XIcon
 } from '@heroicons/vue/24/outline';
 
 const page = usePage();
@@ -28,7 +31,25 @@ const navItems = [
 ];
 
 const filteredNavItems = navItems.filter(item => item.show);
-</script>
+
+const toastNotification = ref(null);
+
+onMounted(() => {
+    if (user?.school_id && window.Echo) {
+        window.Echo.channel(`school.${user.school_id}`)
+            .listen('.attendance.recorded', (e) => {
+                toastNotification.value = {
+                    title: 'Presensi Baru!',
+                    message: `${e.studentName} - ${e.status} (${e.time})`,
+                    type: 'success'
+                };
+                setTimeout(() => {
+                    toastNotification.value = null;
+                }, 5000);
+            });
+    }
+});
+</script>  <!-- ← INI YANG KURANG! -->
 
 <template>
     <div class="min-h-screen bg-slate-100 flex font-sans">
@@ -110,5 +131,36 @@ const filteredNavItems = navItems.filter(item => item.show);
             @click="isSidebarOpen = false"
             class="fixed inset-0 bg-slate-900/50 z-40 sm:hidden"
         ></div>
+
+        <!-- Global Toast Notification (WebSockets) -->
+        <Transition
+            enter-active-class="transform ease-out duration-300 transition"
+            enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+            enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+            leave-active-class="transition ease-in duration-100"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+        >
+            <div v-if="toastNotification" class="fixed bottom-4 right-4 z-50 w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                <div class="p-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <CheckCircleIcon v-if="toastNotification.type === 'success'" class="h-6 w-6 text-green-400" aria-hidden="true" />
+                            <AlertCircleIcon v-else class="h-6 w-6 text-indigo-400" aria-hidden="true" />
+                        </div>
+                        <div class="ml-3 w-0 flex-1 pt-0.5">
+                            <p class="text-sm font-medium text-slate-900">{{ toastNotification.title }}</p>
+                            <p class="mt-1 text-sm text-slate-500">{{ toastNotification.message }}</p>
+                        </div>
+                        <div class="ml-4 flex flex-shrink-0">
+                            <button type="button" @click="toastNotification = null" class="inline-flex rounded-md bg-white text-slate-400 hover:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                <span class="sr-only">Close</span>
+                                <XIcon class="h-5 w-5" aria-hidden="true" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Transition>
     </div>
 </template>

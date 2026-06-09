@@ -13,7 +13,10 @@ import {
     ArrowRightIcon
 } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { Bar } from 'vue-chartjs';
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 const props = defineProps({
     children: Array,
 });
@@ -183,33 +186,35 @@ const formatTime = (timeString) => {
                         <div class="bg-white border border-slate-200 rounded-[12px] p-6 h-full">
                             <h2 class="text-[16px] font-medium text-slate-900 mb-5 border-b border-slate-100 pb-3">Rekap Bulan Ini</h2>
                             
-                            <div v-if="childData.monthlySummary && childData.monthlySummary.length > 0">
-                                <!-- Take current month (index 0 because it was pushed in loop going down, but wait, loop was 5 to 0. So index 5 is the current month.) -->
-                                <div class="space-y-3 mb-8" v-if="childData.monthlySummary[5]">
-                                    <div class="flex justify-between items-center p-3 bg-green-50 text-green-700 rounded-lg border border-green-100">
-                                        <span class="font-medium text-[13px]">Hadir</span>
-                                        <span class="text-[18px] font-medium">{{ childData.monthlySummary[5].data['hadir'] || 0 }}</span>
-                                    </div>
-                                    <div class="flex justify-between items-center p-3 bg-indigo-50 text-indigo-700 rounded-lg border border-indigo-100">
-                                        <span class="font-medium text-[13px]">Sakit / Izin</span>
-                                        <span class="text-[18px] font-medium">{{ (childData.monthlySummary[5].data['sakit'] || 0) + (childData.monthlySummary[5].data['izin'] || 0) }}</span>
-                                    </div>
-                                    <div class="flex justify-between items-center p-3 bg-red-50 text-red-700 rounded-lg border border-red-100">
-                                        <span class="font-medium text-[13px]">Tanpa Keterangan</span>
-                                        <span class="text-[18px] font-medium">{{ childData.monthlySummary[5].data['alpha'] || 0 }}</span>
-                                    </div>
+                            <div v-if="childData.monthlySummary && childData.monthlySummary.length > 0" class="flex flex-col h-full">
+                                <div class="mb-6 flex-1 min-h-[250px]">
+                                    <Bar :data="{
+                                        labels: childData.monthlySummary.map(m => m.month),
+                                        datasets: [
+                                            { label: 'Hadir', backgroundColor: '#22c55e', data: childData.monthlySummary.map(m => m.data['hadir'] || 0) },
+                                            { label: 'Izin/Sakit', backgroundColor: '#eab308', data: childData.monthlySummary.map(m => (m.data['izin'] || 0) + (m.data['sakit'] || 0)) },
+                                            { label: 'Alpa', backgroundColor: '#ef4444', data: childData.monthlySummary.map(m => m.data['alpha'] || 0) }
+                                        ]
+                                    }" :options="{
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+                                        scales: { x: { stacked: true }, y: { stacked: true, ticks: { precision: 0 } } }
+                                    }" />
                                 </div>
                                 
-                                <h3 class="text-[12px] font-medium text-slate-500 uppercase tracking-wide mb-3">Bulan Sebelumnya</h3>
-                                <div class="space-y-2">
-                                    <!-- Show months 4 to 0 (previous months) -->
-                                    <div v-for="i in 5" :key="i" class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0">
-                                        <span class="font-medium text-[13px] text-slate-700">{{ childData.monthlySummary[5-i].month }}</span>
-                                        <div class="flex items-center gap-2 text-[12px]">
-                                            <span class="w-6 text-center font-medium text-green-600">{{ childData.monthlySummary[5-i].data['hadir'] || 0 }}</span>
-                                            <span class="w-6 text-center font-medium text-yellow-600">{{ (childData.monthlySummary[5-i].data['sakit'] || 0) + (childData.monthlySummary[5-i].data['izin'] || 0) }}</span>
-                                            <span class="w-6 text-center font-medium text-red-500">{{ childData.monthlySummary[5-i].data['alpha'] || 0 }}</span>
-                                        </div>
+                                <div class="grid grid-cols-3 gap-2 mt-auto">
+                                    <div class="bg-green-50 rounded-lg p-3 text-center border border-green-100">
+                                        <div class="text-[11px] font-medium text-green-700 uppercase mb-1">Hadir (Bulan Ini)</div>
+                                        <div class="text-[20px] font-medium text-green-700">{{ childData.monthlySummary[5]?.data['hadir'] || 0 }}</div>
+                                    </div>
+                                    <div class="bg-yellow-50 rounded-lg p-3 text-center border border-yellow-100">
+                                        <div class="text-[11px] font-medium text-yellow-700 uppercase mb-1">Izin/Skt</div>
+                                        <div class="text-[20px] font-medium text-yellow-700">{{ (childData.monthlySummary[5]?.data['sakit'] || 0) + (childData.monthlySummary[5]?.data['izin'] || 0) }}</div>
+                                    </div>
+                                    <div class="bg-red-50 rounded-lg p-3 text-center border border-red-100">
+                                        <div class="text-[11px] font-medium text-red-700 uppercase mb-1">Alpa</div>
+                                        <div class="text-[20px] font-medium text-red-700">{{ childData.monthlySummary[5]?.data['alpha'] || 0 }}</div>
                                     </div>
                                 </div>
                             </div>
